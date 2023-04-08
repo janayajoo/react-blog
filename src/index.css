@@ -128,17 +128,6 @@ nav {
 	-webkit-transition: 0.5s;
 }
 
-.movie-item img:hover{
-	filter: brightness(75%);
-	transition: 0.5s;
-}
-
-.movie-item:hover{
-	box-shadow: 0 5px 15px rgba(255, 255, 255, 0.8);
-	transition: 0.5s;
-	transform: scale(1.02);
-}
-
 .movie-item hr{
 	color: var(--textColor);
 }
