@@ -41,7 +41,7 @@ function BlogList() {
                         <img
                             src={`${URL_IMAGE + movie.poster_path}`}
                             alt=""
-                            height={700}
+                            height="50%"
                             width="100%"
                         />
                         <hr/>
