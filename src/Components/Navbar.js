@@ -17,6 +17,7 @@ function Navbar() {
 				<a href="/BlogList">Blog List</a>
 				<a href="/BlogPost">Blog Post</a>	
 				<a href="/Favorite">Favorites</a>
+				<a href="/WatchList">Watch List</a>
 				<button
 					className="nav-btn nav-close-btn"
 					onClick={showNavbar}>

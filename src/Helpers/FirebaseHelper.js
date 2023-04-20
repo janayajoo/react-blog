@@ -1,4 +1,4 @@
-import { collection, addDoc, getDocs, deleteDoc, doc } from "firebase/firestore"; 
+import { collection, addDoc, getDocs, deleteDoc, doc, updateDoc, getDoc} from "firebase/firestore"; 
 import { db } from "../firebase";
 
 const addFavoriteFirebase = async ({objectToSave}, collectionName) => {
@@ -24,7 +24,8 @@ const getFromFirebase  = async (collectionName) => {
     }
 }
 
-const updateFromFirebase = async ({objectToSave}, collectionName) =>{
+const updateFromFirebase = async (idRef, collectionName) =>{
+    await updateDoc(doc(db,collectionName, idRef), { fav: true });
 }
 
 const deleteFromFirebase = async (idRef, collectionName) =>{
@@ -34,5 +35,13 @@ const deleteFromFirebase = async (idRef, collectionName) =>{
         console.error("Error getting documents: ", e);
     }
 }
+
+// const checkFromFirebase = async (idRef, collectionName) =>{
+//     try{
+//         await getDoc(doc(db, collectionName, idRef));
+//     } catch (e) {
+//         console.error("Error getting documents: ", e);
+//     }
+// }
 
 export { addFavoriteFirebase, updateFromFirebase, deleteFromFirebase, getFromFirebase };

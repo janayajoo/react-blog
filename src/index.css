@@ -170,7 +170,7 @@ body {
 
 
 .info-text h6{
-	font-size: 0.9em;
+	font-size: 0.7em;
 }
 
 .info-text h4{
@@ -189,4 +189,9 @@ body {
 .favorite-center-text{
 	color: var(--textColor);
 	font-size: 0.5em;
+	padding :1%;
+}
+
+.addedFav{
+	pointer-events: none;
 }

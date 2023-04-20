@@ -3,84 +3,150 @@ import { useEffect } from 'react';
 import axios from 'axios'
 import { useState } from 'react';
 import { addFavoriteFirebase } from "../Helpers/FirebaseHelper";
+import { collection, getDocs} from "firebase/firestore"; 
+import { db } from "../firebase";
 
 
 function BlogPost() {
-    const addFavorite = async (id, title, overview, imageURL) => {
-        addFavoriteFirebase({objectToSave: {id, title, overview, imageURL}}, "My Favorite Movie Collection");
+
+  const API_URL = "https://api.themoviedb.org/3";
+  const API_KEY = "2a4d79c57d6b96b0996d6ca104a61817";
+
+  const URL_IMAGE = "https://image.tmdb.org/t/p/original";
+
+  const [movies, setMovies] = useState([]);
+  const [searchKey, setSearchKey] = useState("");
+  const [movie, setMovie] = useState({ title: "Loading Movies" });
+  const [favMovies, setFavMovies] = useState("");
+  const [watchMovies, setWatchMovies] = useState("");
+
+  const fetchMovies = async (searchKey) => {
+    const type = searchKey ? "search" : "discover";
+    const {
+      data: { results },
+    } = await axios.get(`${API_URL}/${type}/movie`, {
+      params: {
+        api_key: API_KEY,
+        query: searchKey,
+      },
+    });
+
+    setMovies(results);
+    setMovie(results[0]);
+  };
+
+  const searchMovies = (e) => {
+    e.preventDefault();
+    fetchMovies(searchKey);
+  };
+
+  useEffect(() => {      
+    fetchMovies();
+    const getMovies  = async () => {
+        try {
+            const querySnapshot = await getDocs(collection(db, 'My Favorite Movie Collection'));
+            const docs = [];
+            querySnapshot.forEach((doc) => {                    
+                docs.push({...doc.data(),id: doc.id});
+            });
+            setFavMovies(docs);
+        } catch (e) {
+            console.log(e);
+        }
+    }
+  
+    const getMoviesWatch  = async () => {
+      try {
+          const querySnapshot = await getDocs(collection(db, "My Watchlist Collection"));
+          const docs = [];
+          querySnapshot.forEach((doc) => {                    
+              docs.push({...doc.data(),id: doc.id});
+          });
+          setWatchMovies(docs);
+      } catch (e) {
+          console.log(e);
       }
+    }
+    getMovies();
+    getMoviesWatch();
+  }, [favMovies, watchMovies]);
 
-    const API_URL = "https://api.themoviedb.org/3";
-    const API_KEY = "2a4d79c57d6b96b0996d6ca104a61817";
-  
-    const URL_IMAGE = "https://image.tmdb.org/t/p/original";
-  
-    const [movies, setMovies] = useState([]);
-    const [searchKey, setSearchKey] = useState("");
-    const [movie, setMovie] = useState({ title: "Loading Movies" });
-  
-    const fetchMovies = async (searchKey) => {
-      const type = searchKey ? "search" : "discover";
-      const {
-        data: { results },
-      } = await axios.get(`${API_URL}/${type}/movie`, {
-        params: {
-          api_key: API_KEY,
-          query: searchKey,
-        },
-      });
-  
-      setMovies(results);
-      setMovie(results[0]);
-    };
+  const addFavorite = async (id, title, overview, imageURL, fav) => {
+    if(favMovies.length == 0){
+      addFavoriteFirebase({objectToSave: {id, title, overview, imageURL, fav}}, "My Favorite Movie Collection");
+      alert("La pelicula no se encuentra como Favorita, ya fue agregada");
 
-    const searchMovies = (e) => {
-        e.preventDefault();
-        fetchMovies(searchKey);
-    };
+    } else{
+      for(let index = 0; index <= favMovies.length; index++){
+        const element = favMovies[index];
+        if(element.title === title){      
+          alert("La pelicula si se encuentra como Favorita");
+          break;
+        } else {          
+          addFavoriteFirebase({objectToSave: {id, title, overview, imageURL, fav}}, "My Favorite Movie Collection");
+          alert("La pelicula no se encuentra como Favorita, ya fue agregada");
+          break;
+        }
+      }
+    }
+  }
 
-    useEffect(() => {
-        fetchMovies();
-    }, []);
-
+  const addWatchList = async (id, title, overview, imageURL, watch) => {
+    if(watchMovies.length == 0){
+      addFavoriteFirebase({objectToSave: {id, title, overview, imageURL, watch}}, "My Watchlist Collection");
+      alert("La pelicula no se encuentra como Watchlist, ya fue agregada");
+    } else{
+      for(let index = 0; index <= watchMovies.length; index++){
+        const element = watchMovies[index];
+        if(element.title === title){      
+          alert("La pelicula si se encuentra como Watchlist");
+          break;
+        } else {          
+          addFavoriteFirebase({objectToSave: {id, title, overview, imageURL, watch}}, "My Watchlist Collection");
+          alert("La pelicula no se encuentra como Watchlist, ya fue agregada");
+          break;
+        }
+      }
+    }
+  }
 
     return ( 
-        <div className='mainthing'>
-            <form className="container mb-4 search-bar" onSubmit={searchMovies}>
-                <input
-                type="text"
-                placeholder="Search Movie"
-                onChange={(e) => setSearchKey(e.target.value)}
-                />
-                <button className="btn btn-primary">Search</button>
-            </form>
+      <div className='mainthing'>
+          <form className="container mb-4 search-bar" onSubmit={searchMovies}>
+              <input
+              type="text"
+              placeholder="Search Movie"
+              onChange={(e) => setSearchKey(e.target.value)}
+              />
+              <button className="btn btn-primary">Search</button>
+          </form>
 
+          <div className="container mt-4 ">
+          <div className="row">
+              {movies.map((movie) => (
+              <div key={movie.id} className="col-md-3 mb-2 movie-item">
+                  <img
+                    src={`${URL_IMAGE + movie.poster_path}`}
+                    alt=""
+                    height="50%"
+                    width="100%"
+                  />
+                  <hr/>   
+                  <div className="favorite-center">
+                    <button className="btn btn-primary favorite-center-text" id={movie.id+movie.title} onClick={() =>addFavorite(movie.id, movie.title, movie.overview, `${URL_IMAGE + movie.poster_path}`, false)}>Add To Favorite</button>
+                    <button className="btn btn-primary favorite-center-text" onClick={() =>addWatchList(movie.id, movie.title, movie.overview, `${URL_IMAGE + movie.poster_path}`, true)}>Add To Watchlist</button>
 
-            <div className="container mt-4 ">
-                <div className="row">
-                    {movies.map((movie) => (
-                    <div key={movie.id} className="col-md-3 mb-2 movie-item">
-                        <img
-                            src={`${URL_IMAGE + movie.poster_path}`}
-                            alt=""
-                            height="50%"
-                            width="100%"
-                        />
-                    <hr/>   
-                      <div className="favorite-center">
-                        <button className="btn btn-primary favorite-center-text" onClick={() =>addFavorite(movie.id, movie.title, movie.overview, `${URL_IMAGE + movie.poster_path}`)}>Add To Favorite</button>
-                      </div>                     
-                      <hr/>
-                      <div className="info-text">
-                        <h4 className="text-center"><u><b>{movie.title}</b></u></h4>
-                        <h6 className="text-center">{movie.overview}</h6>           
-                        </div>
-                    </div>
-                ))}
-                </div>
-            </div>
+                  </div>                     
+                  <hr/>
+                  <div className="info-text">
+                    <h4 className="text-center"><u><b>{movie.title}</b></u></h4>
+                    <h6 className="text-center">{movie.overview}</h6>                    
+                  </div>
+              </div>
+          ))}
+          </div>
         </div>
-      );
-}
-
-export {BlogPost} ;
+      </div>
+    );
+  }
+export {BlogPost};

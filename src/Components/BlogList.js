@@ -2,7 +2,10 @@
 import { useEffect } from 'react';
 import axios from 'axios'
 import { useState } from 'react';
-import { addFavoriteFirebase } from "../Helpers/FirebaseHelper";
+import { collection, getDocs} from "firebase/firestore"; 
+import { db } from "../firebase";
+
+import { addFavoriteFirebase, updateFromFirebase } from "../Helpers/FirebaseHelper";
 
 
 function BlogList() {
@@ -14,6 +17,8 @@ function BlogList() {
 
   const [movies, setMovies] = useState([]);
   const [movie, setMovie] = useState({ title: "Loading Movies" });
+  const [favMovies, setFavMovies] = useState("");
+  const [watchMovies, setWatchMovies] = useState("");
 
   const fetchMovies = async (searchKey) => {
     const type = searchKey ? "search" : "discover";
@@ -30,41 +35,104 @@ function BlogList() {
     setMovie(results[0]);
   };
 
-  useEffect(() => {
-      fetchMovies();
-  }, []);
+  useEffect(() => {      
+    fetchMovies();
 
-  const addFavorite = async (id, title, overview, imageURL) => {
-    addFavoriteFirebase({objectToSave: {id, title, overview, imageURL}}, "My Favorite Movie Collection");
+    const getMovies  = async () => {
+        try {
+            const querySnapshot = await getDocs(collection(db, 'My Favorite Movie Collection'));
+            const docs = [];
+            querySnapshot.forEach((doc) => {                    
+                docs.push({...doc.data(),id: doc.id});
+            });
+            setFavMovies(docs);
+        } catch (e) {
+            console.log(e);
+        }
+    }
+
+    const getMoviesWatch  = async () => {
+      try {
+          const querySnapshot = await getDocs(collection(db, "My Watchlist Collection"));
+          const docs = [];
+          querySnapshot.forEach((doc) => {                    
+              docs.push({...doc.data(),id: doc.id});
+          });
+          setWatchMovies(docs);
+      } catch (e) {
+          console.log(e);
+      }
+  }
+  getMovies();
+  getMoviesWatch();
+}, [favMovies, watchMovies]);
+
+  const addFavorite = async (id, title, overview, imageURL, fav) => {
+    if(favMovies.length == 0){
+      addFavoriteFirebase({objectToSave: {id, title, overview, imageURL, fav}}, "My Favorite Movie Collection");
+      alert("La pelicula no se encuentra como Favorita, ya fue agregada");
+
+    } else{
+      for(let index = 0; index <= favMovies.length; index++){
+        const element = favMovies[index];
+        if(element.title === title){      
+          alert("La pelicula si se encuentra como Favorita");
+          break;
+        } else {          
+          addFavoriteFirebase({objectToSave: {id, title, overview, imageURL, fav}}, "My Favorite Movie Collection");
+          alert("La pelicula no se encuentra como Favorita, ya fue agregada");
+          break;
+        }
+      }
+    }
+  }
+
+  const addWatchList = async (id, title, overview, imageURL, watch) => {
+    if(watchMovies.length == 0){
+      addFavoriteFirebase({objectToSave: {id, title, overview, imageURL, watch}}, "My Watchlist Collection");
+      alert("La pelicula no se encuentra como Watchlist, ya fue agregada");
+    } else{
+      for(let index = 0; index <= watchMovies.length; index++){
+        const element = watchMovies[index];
+        if(element.title === title){      
+          alert("La pelicula si se encuentra como Watchlist");
+          break;
+        } else {          
+          addFavoriteFirebase({objectToSave: {id, title, overview, imageURL, watch}}, "My Watchlist Collection");
+          alert("La pelicula no se encuentra como Watchlist, ya fue agregada");
+          break;
+        }
+      }
+    }
   }
 
   return(
       <div className='mainthing'>
-          <div className="container mt-4 ">
-              <div className="row">
-                  {movies.map((movie) => (
-                  <div key={movie.id} className="col-md-3 mb-2 movie-item">
-                      <img
-                          src={`${URL_IMAGE + movie.poster_path}`}
-                          alt=""
-                          height="50%"
-                          width="100%"
-                      />
-                      <hr/>   
-                      <div className="favorite-center">
-                        <button className="btn btn-primary favorite-center-text" onClick={() =>addFavorite(movie.id, movie.title, movie.overview, `${URL_IMAGE + movie.poster_path}`)}>Add To Favorite</button>
-                      </div>                     
-                      <hr/>
-                      <div className="info-text">
-                        <h4 className="text-center"><u><b>{movie.title}</b></u></h4>
-                        <h6 className="text-center">{movie.overview}</h6>                    
-                     
-                      </div>
-                    
-                  </div>
-              ))}
+        <div className="container mt-4 ">
+          <div className="row">
+              {movies.map((movie) => (
+              <div key={movie.id} className="col-md-3 mb-2 movie-item">
+                <img
+                  src={`${URL_IMAGE + movie.poster_path}`}
+                  alt=""
+                  height="50%"
+                  width="100%"
+                />
+                <hr/>   
+                <div className="favorite-center">
+                  <button className="btn btn-primary favorite-center-text" id={movie.id+movie.title} onClick={() =>addFavorite(movie.id, movie.title, movie.overview, `${URL_IMAGE + movie.poster_path}`, false)}>Add To Favorite</button>
+                  <button className="btn btn-primary favorite-center-text" onClick={() =>addWatchList(movie.id, movie.title, movie.overview, `${URL_IMAGE + movie.poster_path}`, true)}>Add To Watchlist</button>
+
+                </div>                     
+                <hr/>
+                <div className="info-text">
+                  <h4 className="text-center"><u><b>{movie.title}</b></u></h4>
+                  <h6 className="text-center">{movie.overview}</h6>                    
+                </div>
               </div>
+            ))}
           </div>
+        </div>
       </div>
     )
   }
