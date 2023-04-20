@@ -2,8 +2,14 @@
 import { useEffect } from 'react';
 import axios from 'axios'
 import { useState } from 'react';
+import { addFavoriteFirebase } from "../Helpers/FirebaseHelper";
+
 
 function BlogPost() {
+    const addFavorite = async (id, title, overview, imageURL) => {
+        addFavoriteFirebase({objectToSave: {id, title, overview, imageURL}}, "My Favorite Movie Collection");
+      }
+
     const API_URL = "https://api.themoviedb.org/3";
     const API_KEY = "2a4d79c57d6b96b0996d6ca104a61817";
   
@@ -60,12 +66,15 @@ function BlogPost() {
                             height="50%"
                             width="100%"
                         />
-                        <hr/>
-                        <div className="info-text">
-                            <h3 className="text-center"><u><b>{movie.title}</b></u></h3>
-                            <h6 className="text-center">{movie.overview}</h6>
+                    <hr/>   
+                      <div className="favorite-center">
+                        <button className="btn btn-primary favorite-center-text" onClick={() =>addFavorite(movie.id, movie.title, movie.overview, `${URL_IMAGE + movie.poster_path}`)}>Add To Favorite</button>
+                      </div>                     
+                      <hr/>
+                      <div className="info-text">
+                        <h4 className="text-center"><u><b>{movie.title}</b></u></h4>
+                        <h6 className="text-center">{movie.overview}</h6>           
                         </div>
-
                     </div>
                 ))}
                 </div>

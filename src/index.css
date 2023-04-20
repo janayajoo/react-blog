@@ -1,168 +1,192 @@
 body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
-}
-
-* {
-	background-color: var(--mainColor2);
-	padding: 0;
 	margin: 0;
-	box-sizing: border-box;
-	font-family: "Titillium Web", sans-serif;
+	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+	  'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+	  sans-serif;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+  }
+  
+  code {
+	font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+	  monospace;
+  }
+  
+  * {
+	  background-color: var(--mainColor2);
+	  padding: 0;
+	  margin: 0;
+	  box-sizing: border-box;
+	  font-family: "Titillium Web", sans-serif;
+  }
+  
+  :root {
+	  --mainColor: #191b24;
+	  --mainColor2: #3a3c49;
+	  --mainColorLight: #5767aa;
+	  --secondaryColor: #00aeff;
+	  --textColor: #eee;
+  }
+  
+  header {
+	  display: flex;
+	  align-items: center;
+	  justify-content: space-between;
+	  height: 80px;
+	  padding: 0 2rem;
+	  background-color: var(--mainColor);
+	  color: var(--textColor);
+  }
+  
+  nav{
+	  background-color: var(--mainColor);
+  }
+  
+  nav a {	
+	  margin: 0 1rem;
+	  color: var(--textColor);
+	  text-decoration: none;
+	  background-color: var(--mainColor);
+  
+  }
+  
+  nav a:hover {
+	  color: var(--secondaryColor);
+  }
+  
+  header .nav-btn {
+	  padding: 5px;
+	  cursor: pointer;
+	  background: transparent;
+	  border: none;
+	  outline: none;
+	  color: var(--textColor);
+	  visibility: hidden;
+	  opacity: 0;
+	  font-size: 1.8rem;
+  }
+  
+  header,
+  nav {
+	  display: flex;
+	  align-items: center;
+  }
+  
+  @media only screen and (max-width: 1024px) {
+	  header .nav-btn {
+		  visibility: visible;
+		  opacity: 1;
+	  }
+  
+	  header nav {
+		  position: fixed;
+		  top: -100vh;
+		  left: 0;
+		  height: 100%;
+		  width: 100%;
+		  display: flex;
+		  flex-direction: column;
+		  align-items: center;
+		  justify-content: center;
+		  gap: 1.5rem;
+		  background-color: var(--mainColor);
+		  transition: 1s;
+	  }
+  
+	  header .responsive_nav {
+		  transform: translateY(100vh);
+	  }
+  
+	  nav .nav-close-btn {
+		  position: absolute;
+		  top: 2rem;
+		  right: 2rem;
+	  }
+  
+	  nav a {
+		  font-size: 1.5rem;
+	  }
+  }
+  
+  .text-center{
+	  color: var(--textColor);
+	  text-align: center;
+  }
+  
+  
+  .movie-item{
+	  margin: 1%;
+	  border-style: solid;
+	  border-radius: 20px;
+	  border-width: 3px;
+	  border-color: var(--textColor);
+	  width: 23%;
+  }
+  
+  .movie-item img{
+	  border-radius: 5%;
+	  margin-top: 5%;
+  }
+  
+  .movie-item img:hover{
+	  filter: brightness(75%);
+	  transition: 0.5s;
+  }
+  
+  .movie-item:hover{
+	  box-shadow: 0 5px 15px rgba(255, 255, 255, 0.8);
+	  transition: 0.5s;
+	  transform: scale(1.02);
+  }
+  
+  .movie-item hr{
+	  color: var(--textColor);
+  }
+  
+  .search-bar{
+	  text-align: center;
+	  align-items: center;
+  }
+  
+  .search-bar input{
+	  padding-right: 100px;
+	  margin-right: 10px;
+	  color: var(--textColor);	
+	  height: 38px;
+	  border-radius: 10px;
+	  padding-left: 10px;
+  }
+  
+  .btn-primary{
+	  background-color: var(--mainColor);
+	  border-color: var(--mainColor);
+  }
+  
+  .container{
+	  max-width: 90%;
+	  margin: 1% 5%;
+	  padding: 0% 5%;
+  }
+
+
+.info-text h6{
+	font-size: 0.9em;
 }
 
-:root {
-	--mainColor: #191b24;
-	--mainColor2: #3a3c49;
-	--mainColorLight: #5767aa;
-	--secondaryColor: #00aeff;
-	--textColor: #eee;
+.info-text h4{
+	font-size: 1.2em;
 }
 
-header {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	height: 80px;
-	padding: 0 2rem;
-	background-color: var(--mainColor);
-	color: var(--textColor);
-}
-
-nav{
-	background-color: var(--mainColor);
-}
-
-nav a {	
-	margin: 0 1rem;
-	color: var(--textColor);
-	text-decoration: none;
-	background-color: var(--mainColor);
-
-}
-
-nav a:hover {
-	color: var(--secondaryColor);
-}
-
-header .nav-btn {
-	padding: 5px;
-	cursor: pointer;
-	background: transparent;
-	border: none;
-	outline: none;
-	color: var(--textColor);
-	visibility: hidden;
-	opacity: 0;
-	font-size: 1.8rem;
-}
-
-header,
-nav {
-	display: flex;
-	align-items: center;
-}
-
-@media only screen and (max-width: 1024px) {
-	header .nav-btn {
-		visibility: visible;
-		opacity: 1;
-	}
-
-	header nav {
-		position: fixed;
-		top: -100vh;
-		left: 0;
-		height: 100%;
-		width: 100%;
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: center;
-		gap: 1.5rem;
-		background-color: var(--mainColor);
-		transition: 1s;
-	}
-
-	header .responsive_nav {
-		transform: translateY(100vh);
-	}
-
-	nav .nav-close-btn {
-		position: absolute;
-		top: 2rem;
-		right: 2rem;
-	}
-
-	nav a {
-		font-size: 1.5rem;
-	}
-}
-
-.text-center{
-	color: var(--textColor);
-}
-
-
-.movie-item{
-	margin: 1%;
-	border-style: solid;
-	border-radius: 20px;
-	border-width: 3px;
-	border-color: var(--textColor);
-	width: 23%;
-}
-
-.movie-item img{
-	border-radius: 5%;
-	margin-top: 5%;
-}
-
-.movie-item img:hover{
-	filter: brightness(75%);
-	transition: 0.5s;
-}
-
-.movie-item:hover{
-	box-shadow: 0 5px 15px rgba(255, 255, 255, 0.8);
-	transition: 0.5s;
-	transform: scale(1.02);
-}
-
-.movie-item hr{
-	color: var(--textColor);
-}
-
-.search-bar{
+.favorite-center{
 	text-align: center;
 	align-items: center;
 }
 
-.search-bar input{
-	padding-right: 100px;
-	margin-right: 10px;
-	color: var(--textColor);	
-	height: 38px;
-	border-radius: 10px;
-	padding-left: 10px;
+.favorite-center button{
+	width: 100%;
 }
 
-.btn-primary{
-	background-color: var(--mainColor);
-	border-color: var(--mainColor);
-}
-
-.container{
-	max-width: 90%;
-	margin: 1% 5%;
-	padding: 0% 5%;
+.favorite-center-text{
+	color: var(--textColor);
+	font-size: 0.5em;
 }

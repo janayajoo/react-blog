@@ -16,6 +16,7 @@ function Navbar() {
 			<nav ref={navRef}>
 				<a href="/BlogList">Blog List</a>
 				<a href="/BlogPost">Blog Post</a>	
+				<a href="/Favorite">Favorites</a>
 				<button
 					className="nav-btn nav-close-btn"
 					onClick={showNavbar}>
