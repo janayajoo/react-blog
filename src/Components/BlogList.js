@@ -4,9 +4,7 @@ import axios from 'axios'
 import { useState } from 'react';
 import { collection, getDocs} from "firebase/firestore"; 
 import { db } from "../firebase";
-
-import { addFavoriteFirebase, updateFromFirebase } from "../Helpers/FirebaseHelper";
-
+import { addFavoriteFirebase } from "../Helpers/FirebaseHelper";
 
 function BlogList() {
 
@@ -39,36 +37,36 @@ function BlogList() {
     fetchMovies();
 
     const getMovies  = async () => {
-        try {
-            const querySnapshot = await getDocs(collection(db, 'My Favorite Movie Collection'));
-            const docs = [];
-            querySnapshot.forEach((doc) => {                    
-                docs.push({...doc.data(),id: doc.id});
-            });
-            setFavMovies(docs);
-        } catch (e) {
-            console.log(e);
-        }
+      try {
+        const querySnapshot = await getDocs(collection(db, 'My Favorite Movie Collection'));
+        const docs = [];
+        querySnapshot.forEach((doc) => {                    
+            docs.push({...doc.data(),id: doc.id});
+        });
+        setFavMovies(docs);
+      } catch (e) {
+        console.log(e);
+      }
     }
 
     const getMoviesWatch  = async () => {
       try {
-          const querySnapshot = await getDocs(collection(db, "My Watchlist Collection"));
-          const docs = [];
-          querySnapshot.forEach((doc) => {                    
-              docs.push({...doc.data(),id: doc.id});
-          });
-          setWatchMovies(docs);
-      } catch (e) {
-          console.log(e);
-      }
+        const querySnapshot = await getDocs(collection(db, "My Watchlist Collection"));
+        const docs = [];
+        querySnapshot.forEach((doc) => {                    
+            docs.push({...doc.data(),id: doc.id});
+        });
+        setWatchMovies(docs);
+    } catch (e) {
+        console.log(e);
+    }
   }
-  getMovies();
-  getMoviesWatch();
-}, [favMovies, watchMovies]);
+    getMovies();
+    getMoviesWatch();
+  }, [favMovies, watchMovies]);
 
   const addFavorite = async (id, title, overview, imageURL, fav) => {
-    if(favMovies.length == 0){
+    if(favMovies.length === 0){
       addFavoriteFirebase({objectToSave: {id, title, overview, imageURL, fav}}, "My Favorite Movie Collection");
       alert("La pelicula no se encuentra como Favorita, ya fue agregada");
 
@@ -88,7 +86,7 @@ function BlogList() {
   }
 
   const addWatchList = async (id, title, overview, imageURL, watch) => {
-    if(watchMovies.length == 0){
+    if(watchMovies.length === 0){
       addFavoriteFirebase({objectToSave: {id, title, overview, imageURL, watch}}, "My Watchlist Collection");
       alert("La pelicula no se encuentra como Watchlist, ya fue agregada");
     } else{

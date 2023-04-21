@@ -20,7 +20,7 @@ function BlogPost() {
   const [favMovies, setFavMovies] = useState("");
   const [watchMovies, setWatchMovies] = useState("");
 
-  const fetchMovies = async (searchKey) => {
+  const fetchMovies = async () => {
     const type = searchKey ? "search" : "discover";
     const {
       data: { results },
@@ -41,7 +41,6 @@ function BlogPost() {
   };
 
   useEffect(() => {      
-    fetchMovies();
     const getMovies  = async () => {
         try {
             const querySnapshot = await getDocs(collection(db, 'My Favorite Movie Collection'));
@@ -69,22 +68,23 @@ function BlogPost() {
     }
     getMovies();
     getMoviesWatch();
-  }, [favMovies, watchMovies]);
+    fetchMovies();
+  }, [movies, favMovies, watchMovies]);
 
   const addFavorite = async (id, title, overview, imageURL, fav) => {
     if(favMovies.length == 0){
       addFavoriteFirebase({objectToSave: {id, title, overview, imageURL, fav}}, "My Favorite Movie Collection");
-      alert("La pelicula no se encuentra como Favorita, ya fue agregada");
+      alert("La pelicula fue agregada a favoritas");
 
     } else{
       for(let index = 0; index <= favMovies.length; index++){
         const element = favMovies[index];
-        if(element.title === title){      
-          alert("La pelicula si se encuentra como Favorita");
+        if(element.title == title){      
+          alert("La pelicula ya se encuentra en favoritas");
           break;
         } else {          
           addFavoriteFirebase({objectToSave: {id, title, overview, imageURL, fav}}, "My Favorite Movie Collection");
-          alert("La pelicula no se encuentra como Favorita, ya fue agregada");
+          alert("La pelicula fue agregada a favoritas");
           break;
         }
       }
@@ -94,16 +94,16 @@ function BlogPost() {
   const addWatchList = async (id, title, overview, imageURL, watch) => {
     if(watchMovies.length == 0){
       addFavoriteFirebase({objectToSave: {id, title, overview, imageURL, watch}}, "My Watchlist Collection");
-      alert("La pelicula no se encuentra como Watchlist, ya fue agregada");
+      alert("La pelicula fue agregada a my watchlist");
     } else{
       for(let index = 0; index <= watchMovies.length; index++){
         const element = watchMovies[index];
-        if(element.title === title){      
-          alert("La pelicula si se encuentra como Watchlist");
+        if(element.title == title){      
+          alert("La pelicula ya se encuentra en my Watchlist");
           break;
         } else {          
           addFavoriteFirebase({objectToSave: {id, title, overview, imageURL, watch}}, "My Watchlist Collection");
-          alert("La pelicula no se encuentra como Watchlist, ya fue agregada");
+          alert("La pelicula fue agregada a my Watchlist");
           break;
         }
       }

@@ -3,6 +3,7 @@ import { collection, getDocs} from "firebase/firestore";
 import { deleteFromFirebase } from "../Helpers/FirebaseHelper";
 import { db } from "../firebase";
 
+
 function Favorite() {
     const [movies, setMovies] = useState([]);  
 
